@@ -1,0 +1,30 @@
+@"
+# Environment variables and API keys
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Frontend dependencies and build files
+node_modules/
+dist/
+
+# RAG vector database
+chroma_db/
+**/chroma_db/
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+"@ | Set-Content .gitignore

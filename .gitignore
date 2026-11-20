@@ -1,0 +1,28 @@
+# Environment variables and API keys
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Frontend dependencies
+node_modules/
+dist/
+
+# Vector database
+chroma_db/
+**/chroma_db/
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
