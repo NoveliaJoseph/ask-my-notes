@@ -14,10 +14,10 @@ function showSources(sources) {
 }
 
 function App() {
-
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [agentMode, setAgentMode] = useState(false);
 
   // Add a message to chat
   function addMessage(msg) {
@@ -26,7 +26,6 @@ function App() {
 
   // Ask a question
   async function askQuestion() {
-
     if (!question.trim() || loading) return;
 
     const myQuestion = question;
@@ -40,16 +39,19 @@ function App() {
     setLoading(true);
 
     try {
-
-      const res = await fetch(`${API}/ask`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          question: myQuestion
-        })
-      });
+      // Select API based on Agent Mode
+      const res = await fetch(
+        `${API}/${agentMode ? "agent" : "ask"}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            question: myQuestion
+          })
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Server error");
@@ -60,16 +62,15 @@ function App() {
       addMessage({
         role: "bot",
         text: data.answer,
-        sources: data.sources
+        sources: data.sources,
+        steps: data.steps
       });
 
     } catch (error) {
-
       addMessage({
         role: "bot",
         text: "Oops! Is the backend running?"
       });
-
     }
 
     setLoading(false);
@@ -77,7 +78,6 @@ function App() {
 
   // Upload PDF
   async function uploadPdf(e) {
-
     const file = e.target.files[0];
 
     if (!file) return;
@@ -96,7 +96,6 @@ function App() {
     setLoading(true);
 
     try {
-
       const res = await fetch(`${API}/upload`, {
         method: "POST",
         body: form
@@ -114,12 +113,10 @@ function App() {
       });
 
     } catch (error) {
-
       addMessage({
         role: "bot",
         text: "Upload failed. Please try again."
       });
-
     }
 
     setLoading(false);
@@ -128,10 +125,21 @@ function App() {
 
   // Display the application
   return (
-
     <div className="app">
 
       <h1>📚 Ask My Notes</h1>
+
+      {/* Agent Mode Switch */}
+      <div className="top">
+        <label className="mode">
+          <input
+            type="checkbox"
+            checked={agentMode}
+            onChange={(e) => setAgentMode(e.target.checked)}
+          />
+          🤖 Agent mode
+        </label>
+      </div>
 
       <div className="chat">
 
@@ -142,7 +150,6 @@ function App() {
         )}
 
         {messages.map((m, i) => (
-
           <div key={i} className={`msg ${m.role}`}>
 
             <p>{m.text}</p>
@@ -153,8 +160,13 @@ function App() {
               </small>
             )}
 
-          </div>
+            {m.steps?.length > 0 && (
+              <small>
+                🛠 {m.steps.join(" → ")}
+              </small>
+            )}
 
+          </div>
         ))}
 
         {loading && (
@@ -199,7 +211,6 @@ function App() {
       </div>
 
     </div>
-
   );
 }
 

@@ -109,3 +109,20 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Agent Mode Styling */
+.top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mode {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-weight: 600;
+  color: #2d1f66;
+}

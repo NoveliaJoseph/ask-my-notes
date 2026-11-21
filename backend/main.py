@@ -1,3 +1,4 @@
+
 # main.py - Ask My Notes Backend
 
 import os
@@ -8,6 +9,7 @@ from pydantic import BaseModel
 from groq import Groq
 
 from ingest import collection, add_pdf
+from agent_langchain import ask_agent
 
 
 # Read API key from .env
@@ -42,7 +44,7 @@ def home():
     }
 
 
-# POST - Ask a question
+# POST - Ask a question using RAG
 @app.post("/ask")
 def ask(q: Question):
 
@@ -98,4 +100,18 @@ def upload(file: UploadFile):
 
     return {
         "message": f"Added {name} ({count} pieces). Ask me!"
+    }
+
+
+# ---------- DAY 3: THE AGENT DOOR ----------
+
+# POST - Ask a question using AI Agent
+@app.post("/agent")
+def agent(q: Question):
+
+    answer, steps = ask_agent(q.question)
+
+    return {
+        "answer": answer,
+        "steps": steps
     }
